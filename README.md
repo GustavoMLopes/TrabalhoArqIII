@@ -1,5 +1,5 @@
 # TrabalhoArqIII 👨‍💻
-Trabalho final do grupo de arquitetura III. 
+Trabalho final do grupo 8 da matéria de arquitetura III. 
 
 ## Enunciado
 O trabalho é o desenvolvimento de um simulador (qualquer linguagem) do algoritmo de Tomasulo, conforme últimos slides de superescalaridade. Livro básico: Arquitetura de Computadores, uma Abordagem Quantitativa, Hennessy e Patterson. O simulador deve suportar instruções de desvio e descarte de instruções no buffer de reordenamento. O simulador deve suportar instruções RISC-V. 
