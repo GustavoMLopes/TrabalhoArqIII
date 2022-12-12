@@ -15,11 +15,14 @@ class InstrucaoBeq(InstrucaoDesvio):
         self.op_2 = op_2
         super().__init__(op_code, label)
 
-    def __str__(self):
+    def log(self):
         str_rep = f'Instrucao: {self.op_code} {self.op_1}, {self.op_2}, {self.label}'
         str_rep += f'\nStall: {self.stall}'
+        str_rep += f'\nClocks: {self.clocks_necessarios}'
         return str_rep
-        
+
+    def __str__(self) -> str:
+        return f'{self.op_code} {self.op_1}, {self.op_2}, {self.label}'
 
 class InstrucaoMemoria(Instrucao):
     def __init__(self, op_code,op_1, imediato, reg_deslocamento):
@@ -28,10 +31,14 @@ class InstrucaoMemoria(Instrucao):
         self.reg_deslocamento = reg_deslocamento
         super().__init__(op_code, 2)
 
-    def __str__(self):
+    def log(self):
         str_rep = f'Instrucao: {self.op_code} {self.op_1}, {self.imediato}({self.reg_deslocamento})'
         str_rep += f'\nStall: {self.stall}'
+        str_rep += f'\nClocks: {self.clocks_necessarios}'
         return str_rep
+
+    def __str__(self):
+        return f'{self.op_code} {self.op_1}, {self.imediato}({self.reg_deslocamento})'
 
 class InstrucaoAritmetica(Instrucao):
     def __init__(self, op_code, dest, op_1, op_2):
@@ -40,7 +47,11 @@ class InstrucaoAritmetica(Instrucao):
         self.op_2 = op_2
         super().__init__(op_code, 1)
 
-    def __str__(self):
+    def log(self):
         str_rep = f'Instrucao: {self.op_code} {self.dest}, {self.op_1}, {self.op_2}'
         str_rep += f'\nStall: {self.stall}'
+        str_rep += f'\nClocks: {self.clocks_necessarios}'
         return str_rep
+
+    def __str__(self):
+        return f'{self.op_code} {self.dest}, {self.op_1}, {self.op_2}'
