@@ -1,0 +1,46 @@
+{
+    "insts": [
+        {
+            "op_code": "ADD",
+            "reg_1": "R6",
+            "reg_2": "R6",
+            "reg_3": "R6"
+        },
+        {
+            "op_code": "SUB",
+            "reg_1": "R6",
+            "reg_2": "R6",
+            "reg_3": "R6"
+        },
+        {
+            "op_code": "MUL",
+            "reg_1": "R6",
+            "reg_2": "R6",
+            "reg_3": "R6"
+        },
+        {
+            "op_code": "DIV",
+            "reg_1": "R6",
+            "reg_2": "R6",
+            "reg_3": "R6"
+        },
+        {
+            "op_code": "LW",
+            "reg_1": "F6",
+            "imediato": "34",
+            "reg_2": "F3"
+        },
+        {
+            "op_code": "SW",
+            "reg_1": "F6",
+            "imediato": "34",
+            "reg_2": "F3"
+        },
+        {
+            "op_code": "BEQ",
+            "reg_1": "F6",
+            "reg_2": "34",
+            "label": "#SAIDA"
+        }
+    ]
+}

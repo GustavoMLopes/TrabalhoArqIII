@@ -1,0 +1,17 @@
+{
+    "estados":[
+        {
+            "state":1,
+            "registradores":[
+                {"R0":"None" },
+                {"R1":"None" },
+                {"R2":"None" },
+                {"R3":"None" },
+                {"R4":"None" },
+                {"R5":"None" },
+                {"R6":"None" }
+            ]
+        }
+
+    ]
+}

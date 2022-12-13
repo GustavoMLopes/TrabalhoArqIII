@@ -6,5 +6,4 @@ p = Processador()
 instrucoes = cria_instrucoes()
 for instrucao in instrucoes:
     p.insere_fila(instrucao)
-p.mostra_fila()
-p.despacho()
+p.visualiza_processador()

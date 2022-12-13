@@ -2,7 +2,7 @@ from instrucao import *
 from estacoes_reserva import *
 
 class Processador:
-    def __init__(self, quant_registradores = 16, quant_somadores = 3, quant_multiplicadores = 2, quant_mem = 2):
+    def __init__(self, quant_registradores = 16, quant_somadores = 3, quant_multiplicadores = 2, quant_mem = 3):
         self.clock = 0
         self.fila_instrucoes = []
         self.rs_somadores = [RSSomador('ADD' + str(i)) for i in range(quant_somadores)]
@@ -29,6 +29,11 @@ class Processador:
         print('  ' + self.fila_instrucoes[-1].__str__())
             
         print(']')
+    
+    def mostra_registradores(self):
+        print('\n*** Registradores ***')
+        for registrador in self.indices_registradores.keys():
+            print(f'{registrador}: {self.banco_registradores[self.indices_registradores[registrador]]}, ')
     def mostra_estacoes_reserva(self):
         print('\n\n *** Estacoes de reserva dos somadores ***')
         for estacao in self.rs_somadores:
@@ -46,11 +51,16 @@ class Processador:
         for instrucao in self.fila_instrucoes:
             disponivel, rs = self.rs_disponivel(instrucao)
             if(disponivel):
-                rs.ocupado = True
                 self.fila_instrucoes.remove(instrucao)
+                if(type(instrucao) == InstrucaoAritmetica):
+                    #r_leitura_1, r_leitura_2 = get_valores_registradores(instrucao)
+                    #self.banco_registradores[self.indices_registradores[instrucao.destino]] = rs.nome
+                    # pronto_leitura_1 =  
+                    #rs.inserir_instrucao(instrucao, val_r_leitura_1, val_r_leitura_2, pronto_leitura_1, pronto_leitura_2)
+                    pass
             else:
                 instrucao.stall = True
-                
+    
     def rs_disponivel(self, instrucao):
         if instrucao.op_code == 'ADD' or instrucao.op_code == 'SUB':
             for rs in self.rs_somadores:
@@ -69,3 +79,8 @@ class Processador:
         return False, None
     def exec():
         pass
+
+    def visualiza_processador(self):
+        self.mostra_fila()
+        self.mostra_estacoes_reserva() 
+        self.mostra_registradores()

@@ -9,6 +9,7 @@ class InstrucaoDesvio(Instrucao):
         self.label = label
         super().__init__(op_code, 1)
 
+#BEQ ou JUMP
 class InstrucaoBeq(InstrucaoDesvio):
     def __init__(self, op_code, op_1, op_2, label):
         self.op_1 = op_1
@@ -24,8 +25,9 @@ class InstrucaoBeq(InstrucaoDesvio):
     def __str__(self) -> str:
         return f'{self.op_code} {self.op_1}, {self.op_2}, {self.label}'
 
+#LOAD STORE
 class InstrucaoMemoria(Instrucao):
-    def __init__(self, op_code,op_1, imediato, reg_deslocamento):
+    def __init__(self, op_code, op_1, imediato, reg_deslocamento):
         self.op_1 = op_1
         self.imediato = imediato
         self.reg_deslocamento = reg_deslocamento
@@ -40,13 +42,19 @@ class InstrucaoMemoria(Instrucao):
     def __str__(self):
         return f'{self.op_code} {self.op_1}, {self.imediato}({self.reg_deslocamento})'
 
+# ADD SUB MUL DIV
 class InstrucaoAritmetica(Instrucao):
     def __init__(self, op_code, dest, op_1, op_2):
         self.dest = dest
         self.op_1 = op_1
         self.op_2 = op_2
-        super().__init__(op_code, 1)
-
+        if(op_code == 'ADD' or op_code == 'SUB'):
+            super().__init__(op_code, 2)
+        elif(op_code == 'MUL'):
+            super().__init__(op_code, 10)
+        else:
+            super().__init__(op_code, 40)
+            
     def log(self):
         str_rep = f'Instrucao: {self.op_code} {self.dest}, {self.op_1}, {self.op_2}'
         str_rep += f'\nStall: {self.stall}'
