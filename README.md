@@ -8,3 +8,5 @@ O trabalho é o desenvolvimento de um simulador (qualquer linguagem) do algoritm
  - Computer Organization and Design, the Hardware/Software Interface, RISC-V Edition. David Patterson and John Hennessy.
  - Guia Prático RISC-V: Atlas de uma Arquitetura Aberta Links to an external site., David Patterson and Andrew Waterman Arquitetura de Computadores, Uma Abordagem Quantitativa, John Hennessy e David Patterson.
  - Superescalaridade e algoritmo de Tomasulo.
+
+ a
