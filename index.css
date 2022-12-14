@@ -22,9 +22,9 @@ div #listaInstrucoes > table{
 	width: 100%;
 }
 
-table > tbody {
+/* #listaInstrucoes > table > tbody {
 	background-color: rgb(223, 223, 223);
-}
+} */
 
 th, td {
 	padding: 2px;
