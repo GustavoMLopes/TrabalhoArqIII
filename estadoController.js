@@ -1,27 +1,24 @@
-export default class Estado {
+export default class EstadoController {
     constructor(CONFIG, instrucoes) {
-        // salva as configurações passadas
         this.configuracao = {
-            "numInstrucoes": CONFIG["nInst"], // quantidade de instrucoes
-            "ciclos": CONFIG["ciclos"],       // numero de ciclos gastos por cada UF 
-            "unidades": CONFIG["unidades"]    // número de ufs
+            "numInstrucoes": CONFIG["nInst"], 
+            "ciclos": CONFIG["ciclos"],       
+            "unidades": CONFIG["unidades"]    
         };
-
-        // cria o vetor de instrucoes
         this.estadoInstrucoes = [];
         for(let i = 0; i < this.configuracao["numInstrucoes"]; i++) {
             let linha = {}
-            linha["instrucao"] = {                      // armazena a instrucao
+            linha["instrucao"] = {                      
                 "operacao": instrucoes[i]["d"],
                 "registradorR": instrucoes[i]["r"],
                 "registradorS": instrucoes[i]["s"],
                 "registradorT": instrucoes[i]["t"],
             };
 
-            linha["posicao"] = i;                      // numero da instrucao
-            linha["issue"] = null;                     // ciclo onde ocorreu o issue
-            linha["exeCompleta"] = null;               // ciclo onde a execucao terminou
-            linha["write"] = null;                     // ciclo onde foi escrito
+            linha["posicao"] = i;                      
+            linha["issue"] = null;                     
+            linha["exeCompleta"] = null;               
+            linha["write"] = null;                    
             this.estadoInstrucoes[i] = linha;
         
         }
@@ -75,24 +72,17 @@ export default class Estado {
             }
         }
 
-        this.clock = 0;       // define o clock atual
-
+        this.clock = 0;
         this.estacaoRegistradores = {}
-        // cria os registradores de ponto flutuante
-        for(let i = 0; i < 32; i += 2) {
+        
+        for(let i = 0; i < 32; i += 2) 
             this.estacaoRegistradores["F" + i] = null;
-        }
-        // cria os registradores de inteiro (necessarios para impedir erros com as operacoes de inteiro)
-        for(let i = 0; i < 32; i += 1) {
+
+        for(let i = 0; i < 32; i += 1) 
             this.estacaoRegistradores["R" + i] = null;
-        }
     }
 
     getNovaInstrucao() {
-    // Funcao a busca de uma nova instrucao
-    // Percorre todo o vetor de instrucoes procurando por uma em que não ocorreu issue ainda. retornando a primeira que encontou
-    // Caso nao encontre nenhuma, retora undefined
-
         for (let i = 0; i < this.estadoInstrucoes.length; i++) {
             const element = this.estadoInstrucoes[i];
             if(element.issue == null)
@@ -102,7 +92,6 @@ export default class Estado {
     }
 
     verificaUFInstrucao(instrucao) {
-    // Funcao que verifica em qual unidade funcional cada instrucao deve executar
         switch (instrucao.operacao) {
             case 'ADDD':
                 return 'Add'
@@ -128,41 +117,31 @@ export default class Estado {
     }
 
     getFUVazia(tipoFU) {
-    // Funcao que busca a primeira UF vazia de um determinado tipo
-
-        // caso a instrucao seja de load/store, busca nas unidades de memoria
         if ((tipoFU === 'Load') || (tipoFU === 'Store')) {
-            // percorre todas as unidades de memoria
             for(let key in this.unidadesFuncionaisMemoria) {
                 var ufMem = this.unidadesFuncionaisMemoria[key];
-
-                // caso seja do tipo que esta buscando e esteja livre, retorna ela
                 if (ufMem.tipoUnidade === tipoFU) {
                     if (!ufMem.ocupado) {
                         return ufMem;
                     }
                 }
             }
-            // caso nao encontre nenhuma, retorna undefined
             return undefined;
         }
-        // percorre todas as unidades funcionais
+
         for(let key in this.unidadesFuncionais) {
             var uf = this.unidadesFuncionais[key];
-
-            // caso seja do tipo que esta buscando e esteja livre, retorna ela
             if (uf.tipoUnidade === tipoFU) {
                 if (!uf.ocupado) {
                     return uf;
                 }
             }
         }
-        // caso nao encontre nenhuma, retorna undefined
         return undefined;
     }
 
     getCiclos(instrucao) {
-    // Funcai que busca na configuracao a quantidade de ciclos gastas em cada instrucao
+    // Funcao que busca na configuracao a quantidade de ciclos gastas em cada instrucao
         switch (instrucao.operacao) {
             case 'ADDD':
                 return parseInt(this.configuracao.ciclos['Add']);
@@ -328,7 +307,7 @@ export default class Estado {
         }
     }
 
-    desalocaUFMem(ufMem) {
+    desalocaUnidadeFuncionalMem(ufMem) {
     // funcao que desaloca (limpa os campos) das unidades funcionais de memoria
         ufMem.instrucao = null;
         ufMem.estadoInstrucao = null;
@@ -341,35 +320,29 @@ export default class Estado {
         ufMem.qj = null;
     }
 
-    desalocaUF(uf) {
-    // funcao que desaloca (limpa os campos) das unidades funcionais
-        uf.instrucao = null;
-        uf.estadoInstrucao = null;
-        uf.tempo = null;
-        uf.ocupado = false;
-        uf.operacao = null;
-        uf.vj = null;
-        uf.vk = null;
-        uf.qj = null;
-        uf.qk = null;
+    desalocaUnidadeFuncional(unidadeFuncional) {
+        unidadeFuncional.instrucao = null;
+        unidadeFuncional.estadoInstrucao = null;
+        unidadeFuncional.tempo = null;
+        unidadeFuncional.ocupado = false;
+        unidadeFuncional.operacao = null;
+        unidadeFuncional.vj = null;
+        unidadeFuncional.vk = null;
+        unidadeFuncional.qj = null;
+        unidadeFuncional.qk = null;
     }
 
-    verificaSeJaTerminou() {
-    // funcao que verifica se todas as isntrucoes executaram
-    // percorre todas as instrucoes e conta quntas ainda nao escreveram os resultados
-    // se o numero for maior que 0, ainda tem instrucao pendente
+    verficaTermino() {
         let qtdInstrucaoNaoTerminada = 0;
         for (let i = 0; i < this.estadoInstrucoes.length; i++) {
-            const element = this.estadoInstrucoes[i];
-            
-            if (element.write === null)
+            const elemento = this.estadoInstrucoes[i];
+            if (elemento.write === null)
                 qtdInstrucaoNaoTerminada++;
         }
-
         return qtdInstrucaoNaoTerminada > 0 ? false : true;
     }
 
-    issueNovaInstrucao() {
+    despachaNovaInstrucao() {
     // funcao da fase de issue do tomasulo
 
         let novaInstrucao = this.getNovaInstrucao();  // busca uma nova instrucao
@@ -453,7 +426,7 @@ export default class Estado {
 
                     // libera as ufs que esta esperando essa terminar e desaloca essa uf
                     this.liberaUFEsperandoResultado(ufMem);
-                    this.desalocaUFMem(ufMem);
+                    this.desalocaUnidadeFuncionalMem(ufMem);
                 }
             }
         }
@@ -477,37 +450,35 @@ export default class Estado {
 
                     // libera as ufs que esta esperando essa terminar e desaloca essa uf
                     this.liberaUFEsperandoResultado(uf);
-                    this.desalocaUF(uf);
+                    this.desalocaUnidadeFuncional(uf);
                 }
             }
         }
     }
 
-    executa_ciclo() {
-    // funcao de execucao do tomasulo
+    log(mostra_log){
+        if(mostra_log){
+            console.log('Estado instrução:');
+            console.log(JSON.stringify(this.estadoInstrucoes, null, 2));
+    
+            console.log('\nUnidades Funcionais memória:');
+            console.log(JSON.stringify(this.unidadesFuncionaisMemoria, null, 2));
+    
+            console.log('\nUnidades Funcionais:');
+            console.log(JSON.stringify(this.unidadesFuncionais, null, 2));
+    
+            console.log('Estado registradores:');
+            console.log(JSON.stringify(this.estacaoRegistradores, null, 2));
+        }
+    }
 
-        this.clock++;  // adiciona 1 no clock
-
-        // executa as instrucoes de issue, execucao e escrita do tomasulo
-        this.issueNovaInstrucao();
+    executa() {
+        this.clock++; 
+        this.despachaNovaInstrucao();
         this.executaInstrucao();
         this.escreveInstrucao();
-
-        // prints no console para debug
-        console.log('Estado instrução:');
-        console.log(JSON.stringify(this.estadoInstrucoes, null, 2));
-
-        console.log('\nUnidades Funcionais memória:');
-        console.log(JSON.stringify(this.unidadesFuncionaisMemoria, null, 2));
-
-        console.log('\nUnidades Funcionais:');
-        console.log(JSON.stringify(this.unidadesFuncionais, null, 2));
-
-        console.log('Estado registradores:');
-        console.log(JSON.stringify(this.estacaoRegistradores, null, 2));
-
-        // retorna se a execucao de todas as instrucoes acabou ou nao
-        return this.verificaSeJaTerminou();
+        this.log(false)
+        return this.verficaTermino();
     }
 
 }

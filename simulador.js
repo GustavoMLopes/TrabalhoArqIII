@@ -1,17 +1,17 @@
-//tomasulo.js
-import Estado from "./estado.js"
+import EstadoController from "./estadoController.js"
 
+function configura() {
+    const ciclos = {};
+    var unidades = {};
+    const configuracoes = {};
 
-function getConfig() {
-    var conf = {};
-
-    conf["nInst"] = $("#nInst").val();
-    if(conf["nInst"] < 1) {
-        alert("O número de instruções deve ser no mínimo 1!");
+    configuracoes["nInst"] = $("#nInst").val();
+    
+    if(configuracoes["nInst"] < 1) {
+        alert("Quantidade de instrucoes inválida!");
         return null;
     }
 
-    var ciclos = {}
 
     ciclos["Integer"] = $("#ciclosInt").val();
     ciclos["Add"] = $("#ciclosFPAdd").val();
@@ -21,39 +21,40 @@ function getConfig() {
     ciclos["Store"] = $("#ciclosStore").val();
 
 
-    if ((ciclos["Integer"] < 1) || (ciclos["Add"] < 1) || (ciclos["Div"] < 1) ||
-        (ciclos["Mult"] < 1) || (ciclos["Load"] < 1)  || (ciclos["Store"] < 1)) {
-        alert("A quantidade de ciclos por instrução, para todas as unidades, deve ser de no mínimo 1 ciclo!");
+    if ((ciclos["Integer"] <= 0) || (ciclos["Add"] <= 0) || (ciclos["Div"] <= 0) ||
+        (ciclos["Mult"] <= 0) || (ciclos["Load"] <= 0)  || (ciclos["Store"] <= 0)) {
+        alert("Quantidade de ciclos inválida");
         return null;
     }
 
-    conf["ciclos"] = ciclos
+    configuracoes["ciclos"] = ciclos
 
-    var unidades = {}
     unidades["Integer"] = $("#fuInt").val();
     unidades["Add"] = $("#fuFPAdd").val();
     unidades["Mult"] = $("#fuFPMul").val();
     
     if ((unidades["Integer"] < 1) || (unidades["Add"] < 1) ||
     (unidades["Mult"] < 1)) {
-        alert("A quantidade de unidades funcionais deve ser no mínimo 1!");
+        alert("Quantidade de unidades funcionais inválida!");
+        console.log("Erro na criacao de unidades funcionais");
         return;
     }
     
-    var unidadesMem = {}
-    unidadesMem["Load"] = $("#fuLoad").val();
-    unidadesMem["Store"] = $("#fuStore").val();
+    var unidadesLS = {}//load store
+    unidadesLS["Load"] = $("#fuLoad").val();
+    unidadesLS["Store"] = $("#fuStore").val();
 
 
-    if(unidades["Load"] < 1 || unidadesMem["Store"] < 1) {
+    if(unidades["Load"] < 1 || unidadesLS["Store"] < 1) {
         alert("A quantidade de unidades funcionais de memória deve ser no mínimo 1!");
+        console.log("Erro na criacao dos clocks");
         return;
     }
 
 
-    conf["unidades"] = unidades;
-    conf["unidadesMem"] = unidadesMem;
-    return conf;
+    configuracoes["unidades"] = unidades;
+    configuracoes["unidadesMem"] = unidadesLS;
+    return configuracoes;
 }
 
 function getInst(i) {
@@ -96,7 +97,7 @@ function registradorInvalidoF(registrador) {
 }
 
 function validaInstrucao(instrucao) {
-    var unidade = getUnidadeInstrucao(instrucao["d"]);
+    var unidade = getUnidadeFuncional(instrucao["d"]);
     if(!unidade) {
         alert("O comando da instrução é inváilido");
         return false;
@@ -155,21 +156,18 @@ function validaInstrucao(instrucao) {
 
 }
 
-function getAllInst(nInst) {
-    var insts = []
-
-    for (var i = 0; i < nInst; i++) {
-        var instrucao = getInst(i);
-        if(!validaInstrucao(instrucao)) {
+function getAllInst(quantidadeInstrucoes) {
+    const instrucoes = []
+    for (let i = 0; i < quantidadeInstrucoes; i++) {
+        const instrucao = getInst(i);
+        if(validaInstrucao(instrucao) == false) 
             return null;
-        }
-        insts.push(instrucao);
+        instrucoes.push(instrucao);
     }
-
-    return insts;
+    return instrucoes;
 }
 
-function getUnidadeInstrucao(instrucao) {
+function getUnidadeFuncional(instrucao) {
     switch (instrucao) {
         case "ADD":
             return "Integer";
@@ -184,7 +182,7 @@ function getUnidadeInstrucao(instrucao) {
             return 'Store';
         case "LD":
             return "Load";
-        
+
 
         case "SUBD":
             return "Add";
@@ -200,8 +198,6 @@ function getUnidadeInstrucao(instrucao) {
             return null
     }
 }
-
-// -----------------------------------------------------------------------------
 
 function atualizaTabelaEstadoInstrucaoHTML(tabelaInsts) {
     for(let i in tabelaInsts) {
@@ -231,22 +227,19 @@ function atualizaTabelaEstadoMenHTML(men) {
     }
 }
 
-function atualizaClock(clock) {
-    $("#clock").html("<h3>Clock: <small id='clock'>" + clock + "</small></h3>");
-
+function updateClock(clock) {
+    $("#clock").html("<h3>Ciclo: <small id='clock'>" + clock + "</small></h3>");
 }
 
-// -----------------------------------------------------------------------------
-
-function gerarTabelaEstadoInstrucaoHTML(diagrama) {
+function gerarTabelaEstadoInstrucaoHTML(estado) {
     var s = (
-        "<h3>Status das instruções</h3><table class='result'>"
+        "<h3>Instruções</h3><table class='result'>"
         + "<tr><th></th><th>Instrução</th><th>i</th><th>j</th>"
         + "<th>k</th><th>Issue</th><th>Exec.<br>Completa</th><th>Write</th></tr>"
     );
 
-    for (let i = 0 ; i < diagrama.configuracao["numInstrucoes"]; ++i) {
-        let instrucao = diagrama.estadoInstrucoes[i].instrucao;
+    for (let i = 0 ; i < estado.configuracao["numInstrucoes"]; ++i) {
+        let instrucao = estado.estadoInstrucoes[i].instrucao;
         s += (
             `<tr> <td>I${i}</td> <td>${instrucao["operacao"]}</td>
             <td>${instrucao["registradorR"]}</td> <td>${instrucao["registradorS"]}</td> <td>${instrucao["registradorT"]}</td>
@@ -259,14 +252,13 @@ function gerarTabelaEstadoInstrucaoHTML(diagrama) {
     $("#estadoInst").html(s);
 }
 
-function gerarTabelaEstadoUFHTML(diagrama) {
+function gerarTabelaEstadoUFHTML(estado) {
     var s = (
-        "<h3>Reservations Stations</h3><table class='result'><tr> <th>Tempo</th> <th>UF</th> <th>Ocupado</th>"
-        + "<th>Op</th> <th>Vj</th> <th>Vk</th> <th>Qj</th> <th>Qk</th>"
+        "<h3>Estações de Reserva</h3><table class='result'><tr> <th>Tempo Restante</th> <th>UF</th> <th>Ocupado</th>"
+        + "<th>OP</th> <th>Vj</th> <th>Vk</th> <th>Qj</th> <th>Qk</th>"
     );
-
-    console.log(diagrama.unidadesFuncionais);
-    let unidadesFuncionais = diagrama.unidadesFuncionais;
+    
+    let unidadesFuncionais = estado.unidadesFuncionais;
     for(let key in unidadesFuncionais) {
         var uf = unidadesFuncionais[key];
 
@@ -282,8 +274,8 @@ function gerarTabelaEstadoUFHTML(diagrama) {
     $("#estadoUF").html(s);
 }
 
-function gerarTabelaEstadoMenHTML(diagrama) {
-    var s = `<h3>Status dos registradores</h3> <table class="result">`;
+function gerarTabelaEstadoMenHTML() {
+    var s = `<h3>Registradores</h3> <table class="result">`;
 
     for(var i = 0; i < 2; ++i) {
         s += `<tr>`
@@ -303,8 +295,8 @@ function gerarTabelaEstadoMenHTML(diagrama) {
 
 function gerarTabelaEstadoUFMem(diagrama) {
     var s = (
-        "<h3>Reservations Stations Load/Store</h3><table class='result'>"
-        + "<tr><th>Tempo</th><th>Instrução</th><th>Ocupado</th><th>Endereço</th>"
+        "<h3>Estações de Reserva de Memória</h3><table class='result'>"
+        + "<tr><th>Tempo Restante</th><th>OP</th><th>Ocupado</th><th>A</th>"
         + "<th>Destino</th>"
     );
     for(let key in diagrama.unidadesFuncionaisMemoria) {
@@ -322,7 +314,6 @@ function gerarTabelaEstadoUFMem(diagrama) {
 function atualizaTabelaEstadoUFMemHTML(ufsMem) {
     for(let key in ufsMem) {
         const ufMem = ufsMem[key];
-        console.log('QQQQ', ufMem);
         $(`#${ufMem["nome"]}_tempo`).text((ufMem["tempo"] !== null) ? ufMem["tempo"] : "");
         $(`#${ufMem["nome"]}_ocupado`).text((ufMem["ocupado"]) ? "sim" : "não");
         $(`#${ufMem["nome"]}_operacao`).text(ufMem["operacao"] ? ufMem["operacao"] : "");
@@ -364,40 +355,6 @@ function geraTabelaParaInserirInstrucoes(nInst) {
         $("#listaInstrucoes").html(tabela);
 }
 
-// -----------------------------------------------------------------------------
-
-function carregaExemplo() {
-    var exN = $("#exemploSelect").val();
-
-    $.getJSON(`./exemplos/ex${exN}.json`, function() {
-        console.log("Lido :3");
-
-    }).fail(function() {
-      alert("Não foi possivel carregar o exemplo.")
-    }).done(function(data) {
-        $("#nInst").val(data["insts"].length);
-        var confirmou = confirmarNInst();
-
-        for (var i = 0; i < data["insts"].length; i++) {
-           $(`#D${i}`).val(data["insts"][i]["D"]);
-           $(`#R${i}`).val(data["insts"][i]["R"]);
-           $(`#S${i}`).val(data["insts"][i]["S"]);
-           $(`#T${i}`).val(data["insts"][i]["T"]);
-        }
-
-        for (var key in data["config"]["ciclos"]) {
-           $(`#${key}`).val(parseInt(data["config"]["ciclos"][key]));
-        }
-
-        for (var key in data["config"]["unidades"]) {
-            $(`#${key}`).val(parseInt(data["config"]["unidades"][key]));
-        }
-
-
-    });
-}
-
-
 function confirmarNInst() {
     var nInst = $("#nInst").val();
     if(nInst < 1) {
@@ -408,8 +365,12 @@ function confirmarNInst() {
     return true;
 }
 
+function verificaQuantidadeInstrucoes() {
+    var tds = $("#tabelaInst").children('tbody').children('tr').length;
+    $("#nInst").val(tds);
+}
 
-function limparCampos() {
+function resetCampoInput() {
     $("#exemploSelect").val("---");
 
     $("#nInst").val(1);
@@ -433,89 +394,123 @@ function limparCampos() {
     $("#estadoMem").html("");
 }
 
+function carregaExemplo() {
+    const exemplo = $("#exemploSelect").val();
+    $.getJSON(`./exemplos/ex${exemplo}.json`)
+      .fail(() => alert("Falha ao carregar o exemplo!"))
+      .done(function(data) {
+        $("#nInst").val(data["insts"].length);
+        confirmarNInst();
+        for (var i = 0; i < data["insts"].length; i++) {
+           $(`#D${i}`).val(data["insts"][i]["D"]);
+           $(`#R${i}`).val(data["insts"][i]["R"]);
+           $(`#S${i}`).val(data["insts"][i]["S"]);
+           $(`#T${i}`).val(data["insts"][i]["T"]);
+        }
+        
+        for (var key in data["config"]["ciclos"]) {
+           $(`#${key}`).val(parseInt(data["config"]["ciclos"][key]));
+        }
 
-function verificaNInst() {
-    var tds = $("#tabelaInst").children('tbody').children('tr').length;
-    $("#nInst").val(tds);
+        for (var key in data["config"]["unidades"]) {
+            $(`#${key}`).val(parseInt(data["config"]["unidades"][key]));
+        }
+    });
 }
 
-$(document).ready(function() {
-    var confirmou = false;
-    var diagrama = null;
-    var terminou = false;
+//---------------- configurações ou atualizações nas tabelas -----------
+function configuraTabelasEnvio(estado){
+    gerarTabelaEstadoInstrucaoHTML(estado);
+    atualizaTabelaEstadoInstrucaoHTML(estado["tabela"])
+    gerarTabelaEstadoUFHTML(estado);
+    atualizaTabelaEstadoUFHTML(estado["uf"]);
+    gerarTabelaEstadoMenHTML();
+    gerarTabelaEstadoUFMem(estado);
+    atualizaTabelaEstadoUFMemHTML(estado["ufMem"]);
+}
 
-    $("#limpar").click(function() {
-        limparCampos();
-    })
+function configuraTabelasTrocaEstado(estado){
+    atualizaTabelaEstadoInstrucaoHTML(estado.estadoInstrucoes);
+    atualizaTabelaEstadoUFMemHTML(estado.unidadesFuncionaisMemoria);
+    atualizaTabelaEstadoUFHTML(estado.unidadesFuncionais);
+    atualizaTabelaEstadoMenHTML(estado.estacaoRegistradores);
+}
 
-    $("#carregaExemplo").click(function() {
-        carregaExemplo();
-        confirmou = true;
-    });
+function configuraTabelasResultado(estado){
+    atualizaTabelaEstadoInstrucaoHTML(estado.estadoInstrucoes);
+    atualizaTabelaEstadoUFMemHTML(estado.unidadesFuncionaisMemoria);
+    atualizaTabelaEstadoUFHTML(estado.unidadesFuncionais);
+    atualizaTabelaEstadoMenHTML(estado.estacaoRegistradores);
+}
+//--------------------------------------------------------------------
 
-    $("#confirmarNInst").click(function() {
-        confirmou = confirmarNInst();
-    });
+function startSimulacao(){
+    //jquery
+    $(document).ready(() => {
+        let estado = null;
+        //variáveis de controle do fluxo da simulação
+        let fimExecucao = false;
+        let instrucoesConfirmadas = false;
 
-    $("#enviar").click(function() {
-        if(!confirmou) {
-            alert("Confirme o número de instruções!");
-            return;
-        }
+        //caso o botão de resetar os campos seja clicado
+        $("#limpar").click(()=>  resetCampoInput());
+        //caso o botão de confirmação das instruções seja clicado
+        $("#confirmarNInst").click(()=>  instrucoesConfirmadas = confirmarNInst());
+        //caso o botão de load do exemplo seja clicado
+        $("#carregaExemplo").click(function() {
+            carregaExemplo();
+            instrucoesConfirmadas = true;
+        });
+        //caso o botão de gerar o estado final seja clicado
+        $("#resultado").click(() => {
+            if(!estado) {
+                alert("As instruções devem ser submetidas");
+                return;
+            }
+            while(fimExecucao == false) {
+                fimExecucao = estado.executa();
+                configuraTabelasResultado(estado);
+                updateClock(estado.clock);
+            }
+        });
+        //caso o botão de próximo estado seja clicado
+        $("#proximo").click(() => {
+            if(!estado) {
+                alert("As instruções devem ser submetidas");
+                return;
+            }
+            else if(fimExecucao) {
+                alert("Todas as instruções finalizadas.");
+                return;
+            }
         
-        console.log("aqui");
-        verificaNInst();
-        
-        const CONFIG = getConfig();
-        if(!CONFIG) {
-            return;
-        }
-        var insts = getAllInst(CONFIG["nInst"]);
-        if(!insts) {
-            return;
-        }
-        diagrama = new Estado(CONFIG, insts);
-        gerarTabelaEstadoInstrucaoHTML(diagrama);
-        atualizaTabelaEstadoInstrucaoHTML(diagrama["tabela"])
-        gerarTabelaEstadoUFHTML(diagrama);
-        atualizaTabelaEstadoUFHTML(diagrama["uf"]);
-        gerarTabelaEstadoMenHTML(diagrama);
-        gerarTabelaEstadoUFMem(diagrama);
-        atualizaTabelaEstadoUFMemHTML(diagrama["ufMem"]);
-        terminou = false;
-        $("#clock").html("<h3>Clock: <small id='clock'>0</small></h3>");
-    });
+            fimExecucao = estado.executa();
+            configuraTabelasTrocaEstado(estado);
+            updateClock(estado.clock);
+        });
+        //caso o botão de envio das instruções seja clicado
+        $("#enviar").click(() => {
+            fimExecucao = false;
+            if(instrucoesConfirmadas == false) {
+                alert("Confirme o número de instruções!");
+                return;
+            }
+            verificaQuantidadeInstrucoes();
+            const configuracoes = configura();
+            //Houve erro na insercao de algum input
+            if(!configuracoes) 
+                return;
+            //Nao houve erro na insercao de algum input
 
-    $("#proximo").click(function() {
-        if(!diagrama) {
-            alert("Envie primeiro");
-            return;
-        }
-        if(terminou) {
-            alert("Todas as instruções estão completadas.");
-            return;
-        }
-        // terminou = avancaCiclo(diagrama);
-        terminou = diagrama.executa_ciclo();
-        atualizaTabelaEstadoInstrucaoHTML(diagrama.estadoInstrucoes);
-        atualizaTabelaEstadoUFMemHTML(diagrama.unidadesFuncionaisMemoria);
-        atualizaTabelaEstadoUFHTML(diagrama.unidadesFuncionais);
-        atualizaTabelaEstadoMenHTML(diagrama.estacaoRegistradores);
-        atualizaClock(diagrama.clock);
-
+            const instsrucoes = getAllInst(configuracoes["nInst"]);
+            if(!instsrucoes) {
+                return;
+            }
+            estado = new EstadoController(configuracoes, instsrucoes);
+            configuraTabelasEnvio(estado)
+            
+            $("#clock").html("<h3>Ciclo: <small id='clock'>0</small></h3>");
+        });
     });
-    $("#resultado").click(function() {
-        if(!diagrama) {
-            alert("Envie primeiro");
-            return;
-        }
-        while(!terminou) {
-            terminou = diagrama.executa_ciclo();
-            atualizaTabelaEstadoInstrucaoHTML(diagrama.estadoInstrucoes);
-            atualizaTabelaEstadoUFMemHTML(diagrama.unidadesFuncionaisMemoria);
-            atualizaTabelaEstadoUFHTML(diagrama.unidadesFuncionais);
-            atualizaTabelaEstadoMenHTML(diagrama.estacaoRegistradores);
-            atualizaClock(diagrama.clock);
-        }
-    });
-});
+}
+startSimulacao();
