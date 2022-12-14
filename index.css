@@ -21,3 +21,9 @@ main div {
 	border-collapse: collapse;
 	padding: 5px;
 }
+
+.form-control:focus {
+    outline: 0 !important;
+    border-color: initial;
+    box-shadow: none;
+}

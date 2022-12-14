@@ -501,7 +501,6 @@ function startSimulacao(){
             if(!configuracoes) 
                 return;
             //Nao houve erro na insercao de algum input
-
             const instsrucoes = getAllInst(configuracoes["nInst"]);
             if(!instsrucoes) {
                 return;
