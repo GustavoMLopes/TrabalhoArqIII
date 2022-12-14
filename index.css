@@ -40,3 +40,9 @@ td > select {
 	width: 95%;
 	border-radius: 25px;
 }
+
+.form-control:focus {
+    outline: 0 !important;
+    border-color: initial;
+    box-shadow: none;
+}
