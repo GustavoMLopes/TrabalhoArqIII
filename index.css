@@ -4,10 +4,6 @@ table {
 	font-family: monospace;
 }
 
-th, td {
-	padding: 2px;
-}
-
 body {
 	padding-bottom: 2em;
 }
@@ -20,4 +16,27 @@ main div {
 	border: 1px solid black;
 	border-collapse: collapse;
 	padding: 5px;
+}
+
+div #listaInstrucoes > table{
+	width: 100%;
+}
+
+table > tbody {
+	background-color: rgb(223, 223, 223);
+}
+
+th, td {
+	padding: 2px;
+	border-radius: 25px;
+}
+
+td > input {
+	width: 95%;
+	border-radius: 25px;
+}
+
+td > select {
+	width: 95%;
+	border-radius: 25px;
 }
