@@ -93,8 +93,8 @@ export default class EstadoController {
 
     verificaUFInstrucao(instrucao) {
         switch (instrucao.operacao) {
-            case 'ADDD':
-                return 'Add'
+            // case 'ADDD':
+            //     return 'Add'
             case 'SUBD':
                 return 'Add'
             case 'MULTD':
@@ -107,12 +107,12 @@ export default class EstadoController {
                 return 'Store'
             case 'ADD':
                 return 'Integer'
-            case 'DADDUI':
-                return 'Integer'
+            // case 'DADDUI':
+            //     return 'Integer'
             case 'BEQ':
                 return 'Integer'
-            case 'BNEZ':
-                return 'Integer'
+            // case 'BNEZ':
+            //     return 'Integer'
         }
     }
 
@@ -143,8 +143,8 @@ export default class EstadoController {
     getCiclos(instrucao) {
     // Funcao que busca na configuracao a quantidade de ciclos gastas em cada instrucao
         switch (instrucao.operacao) {
-            case 'ADDD':
-                return parseInt(this.configuracao.ciclos['Add']);
+            // case 'ADDD':
+            //     return parseInt(this.configuracao.ciclos['Add']);
             case 'SUBD':
                 return parseInt(this.configuracao.ciclos['Add']);
             case 'MULTD':
@@ -157,12 +157,12 @@ export default class EstadoController {
                 return parseInt(this.configuracao.ciclos['Store']);
             case 'ADD':
                 return parseInt(this.configuracao.ciclos['Integer']);
-            case 'DADDUI':
-                return parseInt(this.configuracao.ciclos['Integer']);
+            // case 'DADDUI':
+            //     return parseInt(this.configuracao.ciclos['Integer']);
             case 'BEQ':
                 return parseInt(this.configuracao.ciclos['Integer']);
-            case 'BNEZ':
-                return parseInt(this.configuracao.ciclos['Integer']);
+            // case 'BNEZ':
+            //     return parseInt(this.configuracao.ciclos['Integer']);
         }
     }
 
