@@ -95,11 +95,11 @@ export default class EstadoController {
         switch (instrucao.operacao) {
             // case 'ADDD':
             //     return 'Add'
-            case 'SUBD':
+            case 'SUB':
                 return 'Add'
-            case 'MULTD':
+            case 'MULT':
                 return 'Mult'
-            case 'DIVD':
+            case 'DIV':
                 return 'Mult'
             case 'LD':
                 return 'Load'
@@ -145,11 +145,11 @@ export default class EstadoController {
         switch (instrucao.operacao) {
             // case 'ADDD':
             //     return parseInt(this.configuracao.ciclos['Add']);
-            case 'SUBD':
+            case 'SUB':
                 return parseInt(this.configuracao.ciclos['Add']);
-            case 'MULTD':
+            case 'MULT':
                 return parseInt(this.configuracao.ciclos['Mult']);
-            case 'DIVD':
+            case 'DIV':
                 return parseInt(this.configuracao.ciclos['Div']);
             case 'LD':
                 return parseInt(this.configuracao.ciclos['Load']);

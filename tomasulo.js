@@ -124,13 +124,13 @@ function validaInstrucao(instrucao) {
             }
             return true;
         }
-        if(comando == "BNEZ") {
-            if(registradorInvalidoR(instrucao["r"]) || (instrucao["s"].replace(" ", "") == "") || (instrucao["t"].replace(" ", "") != "")) {
-                alertValidaInstrucao(instrucao);
-                return false;
-            }
-            return true;
-        }
+        // if(comando == "BNEZ") {
+        //     if(registradorInvalidoR(instrucao["r"]) || (instrucao["s"].replace(" ", "") == "") || (instrucao["t"].replace(" ", "") != "")) {
+        //         alertValidaInstrucao(instrucao);
+        //         return false;
+        //     }
+        //     return true;
+        // }
         if(comando == "ADD") {
             if(registradorInvalidoR(instrucao["r"]) || registradorInvalidoR(instrucao["s"]) || registradorInvalidoR(instrucao["t"])) {
                 alertValidaInstrucao(instrucao);
@@ -138,12 +138,12 @@ function validaInstrucao(instrucao) {
             }
             return true;
         }
-        if(comando == "DADDUI") {
-            if(registradorInvalidoR(instrucao["r"]) || registradorInvalidoR(instrucao["s"]) || isNaN(parseInt(instrucao["t"]))) {
-                alertValidaInstrucao(instrucao);
-                return false;
-            }
-        }
+        // if(comando == "DADDUI") {
+        //     if(registradorInvalidoR(instrucao["r"]) || registradorInvalidoR(instrucao["s"]) || isNaN(parseInt(instrucao["t"]))) {
+        //         alertValidaInstrucao(instrucao);
+        //         return false;
+        //     }
+        // }
         return true;
     }
 
@@ -173,27 +173,23 @@ function getUnidadeInstrucao(instrucao) {
     switch (instrucao) {
         case "ADD":
             return "Integer";
-        case "DADDUI":
-            return "Integer";
+        // case "DADDUI":
+        //     return "Integer";
         case "BEQ":
             return "Integer";
-        case "BNEZ":
-            return "Integer";
-
+        // case "BNEZ":
+        //     return "Integer";
         case "SD":
             return 'Store';
         case "LD":
             return "Load";
-        
-
-        case "SUBD":
+        case "SUB":
             return "Add";
-        case "ADDD":
-            return "Add";
-
-        case "MULTD":
+        // case "ADDD":
+        //     return "Add";
+        case "MULT":
             return "Mult";
-        case "DIVD":
+        case "DIV":
             return "Mult";
 
         default:
@@ -345,14 +341,14 @@ function geraTabelaParaInserirInstrucoes(nInst) {
                         "<option selected value = \"\">None</option>" +
                         "<option value=\"LD\">LD</option>" +
                         "<option value=\"SD\">SD</option>" +
-                        "<option value=\"MULTD\">MULTD</option>" +
-                        "<option value=\"DIVD\">DIVD</option>" +
-                        "<option value=\"ADDD\">ADDD</option>" +
-                        "<option value=\"SUBD\">SUBD</option>" +
+                        "<option value=\"MULT\">MULT</option>" +
+                        "<option value=\"DIV\">DIV</option>" +
+                        // "<option value=\"ADDD\">ADDD</option>" +
+                        "<option value=\"SUB\">SUB</option>" +
                         "<option value=\"ADD\">ADD</option>" +
-                        "<option value=\"DADDUI\">DADDUI</option>" +
+                        // "<option value=\"DADDUI\">DADDUI</option>" +
                         "<option value=\"BEQ\">BEQ</option>" +
-                        "<option value=\"BNEZ\">BNEZ</option>" +
+                        // "<option value=\"BNEZ\">BNEZ</option>" +
                     "</td>" +
                     "<td><input type=\"text\" name=\""+ r + "\" id=\""+ r + "\" size=\"3\" maxlength=\"3\" /></td>" +
                     "<td><input type=\"text\" name=\""+ s + "\" id=\""+ s + "\" size=\"3\" maxlength=\"5\" /></td>" +
